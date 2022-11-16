@@ -1,0 +1,20 @@
+﻿@page "/"
+@inject IRepositorio repositorio
+
+
+<div>
+    <h3>Películas</h3>
+    <ListadoPeliculas Peliculas="Peliculas" Display="display:none;"/>
+</div>
+
+@code {
+
+    private List<Pelicula> Peliculas { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Peliculas = repositorio.Peliculas;               
+    }
+
+    List<Generos> Pollas = new List<Generos>();
+}

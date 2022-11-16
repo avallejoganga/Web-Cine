@@ -1,0 +1,136 @@
+﻿@page "/peliculas/buscar"
+@inject IRepositorio repositorio
+
+<h3>FiltroPeliculas</h3>
+
+<div class="form-check-inline" style="margin-bottom: 1rem;">
+    <div class="form-group mb-2" style="display: inline-flex; width: 13.3rem">
+        <input @bind-value="titulo" @bind-value:event="oninput" @onkeypress="@((KeyboardEventArgs e) => TituloKeyPress(e))"
+               type="text" class="form-control" style="margin-right: 1rem; width: 17rem;" id="titulo" placeholder="Titulo Pelicula" />
+        <button type="button" class="btn btn-danger" @onclick="LimpiarOnClick">Limpiar</button>
+    </div>
+    <div style=" display: flex; width: 19rem">
+        <select class="form-control" style="width: 39rem; margin-right: 2.05rem" @bind="generoSeleccionado">
+            <option>--Seleccione un genero--</option>
+            @foreach (var item in generos)
+            {
+                <option value="@item.ID">@item.Nombre</option>
+            }
+        </select>
+        <button type="button" class="btn btn-primary" style="padding-inline: 13px;" @onclick="CargarPeliculas">Buscar</button>
+    </div>  
+</div>
+
+
+<ListadoPeliculas Peliculas="Peliculas"></ListadoPeliculas>
+
+@code {
+    private List<Pelicula> Peliculas;
+    string titulo = "";
+    int? generoSeleccionado;
+    string _generoSeleccionado;
+    private List<Genero> generos = new List<Genero>();
+    private bool futurosEstrenos = false;
+    private bool masVotadas = false;
+    private bool enCartelera = false;
+
+
+    private void TituloKeyPress(KeyboardEventArgs e)    
+    {
+        if (e.Key == "Enter")
+        {
+            Peliculas = CargarNuevasPeliculas();
+        }
+
+    }
+
+    protected override void OnInitialized()
+    {
+        Peliculas = repositorio.Peliculas;
+        generos = repositorio.Generos;
+
+    }
+
+    private void CargarPeliculas()
+    {
+        Peliculas = CargarNuevasPeliculas();
+    }
+
+    private List<Pelicula> CargarNuevasPeliculas()
+    {
+        _generoSeleccionado = TranscribirGenero();
+        List<Pelicula> Temporal1 = repositorio.Peliculas.Where(x => x.Titulo.ToLower().Contains(titulo.ToLower())).ToList();
+        List<Pelicula> Temporal2 = new List<Pelicula>();
+        if (generoSeleccionado != null && titulo == "")
+        {
+            foreach (var pelicula in repositorio.Peliculas)
+            {
+                foreach (var genero in pelicula.Generos)
+                {
+                    if (genero.Nombre == _generoSeleccionado)
+                    {
+                        Temporal2.Add(pelicula);
+                    }
+                }
+            }
+            Temporal1 = Temporal2;
+        }
+        else if(generoSeleccionado != null && titulo != null)
+        {
+            foreach (var pelicula in Temporal1)
+            {
+                foreach (var genero in pelicula.Generos)
+                {
+                    if (genero.Nombre == _generoSeleccionado)
+                    {
+                        Temporal2.Add(pelicula);
+                    }
+                }
+            }
+            Temporal1 = Temporal2;
+        }
+        return Temporal1;
+    }
+
+    private void LimpiarOnClick()
+    {
+        Peliculas = repositorio.Peliculas;
+        titulo = "";
+        generoSeleccionado = null;
+        futurosEstrenos = false;
+        enCartelera = false;
+        masVotadas = false;
+    }
+
+    public List<Genero> DarGenero(string genero1, string? genero2)
+    {
+        List<Genero> Temporal = new List<Genero>();
+
+        if (genero1 != null)
+        {
+            Temporal.Add(new Genero(genero1));
+        }
+
+        return Temporal;
+    }
+
+    string TranscribirGenero()
+    {
+        string NombreGenero = "";
+        List<Genero> lista = repositorio.ObtenerGeneros();
+        for (int i = 0; i < lista.Count; i++)
+        {
+            lista[i].ID = i;
+        }
+        foreach (var genero in lista)
+            if (genero.ID == generoSeleccionado)
+                NombreGenero = genero.Nombre;
+        return NombreGenero;
+    }
+
+    void escribir()
+    {
+        _generoSeleccionado = TranscribirGenero();
+        Console.WriteLine(_generoSeleccionado);
+    }
+}

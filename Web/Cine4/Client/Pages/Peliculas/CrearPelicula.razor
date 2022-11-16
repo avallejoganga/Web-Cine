@@ -1,0 +1,27 @@
+﻿@page "/peliculas/crear"
+@inject NavigationManager navigationManager
+
+<h3>CrearPelicula</h3>
+
+<FormularioPeliculas Pelicula="Pelicula" OnValidSubmit="Crear" GenerosNoSeleccionados="GenerosNoSeleccionados">
+
+</FormularioPeliculas>
+
+@code {
+    private Pelicula Pelicula = new Pelicula();
+    private List<Genero> GenerosNoSeleccionados = new List<Genero>();
+
+    protected override void OnInitialized()
+    {
+        GenerosNoSeleccionados = new List<Genero>
+        {
+            
+        };
+    }
+
+    void Crear()
+    {
+        Console.WriteLine(navigationManager.Uri);
+        navigationManager.NavigateTo("pelicula");
+    }
+}

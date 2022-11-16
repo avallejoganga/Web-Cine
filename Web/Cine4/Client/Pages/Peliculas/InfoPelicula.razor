@@ -1,0 +1,61 @@
+﻿@page "/peliculas/info/{PeliculaID:int}"
+@inject IRepositorio repositorio
+
+<h3 style="margin-bottom: 2rem">Info Pelicula</h3>
+
+
+<div class="order" style="    justify-content: space-around; width: 1000px; margin-left: -3.8rem;">
+    <div>
+        <img src="@Pelicula.Poster" style="width: 225px; height:300px" />
+    </div>
+
+    <div style="display: grid;">
+        <div>
+            <h4><b class="headers">Título:</b></h4>
+            <h4>@Pelicula.Titulo</h4>
+        </div>
+        <div>
+            <h4><b class="headers">Fecha de Lanzamiento:</b></h4>
+            <h3>@Lanzamiento</h3>
+        </div>
+    </div>
+
+    <div>
+        <h4><b class="headers">Géneros:</b></h4>
+        @foreach (var genero in Pelicula.Generos)
+        {
+            <h4>-@genero.Nombre</h4>
+        }
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter] public int PeliculaID { get; set; }
+    Pelicula Pelicula;
+    private List<Genero> GenerosSeleccionados = new List<Genero>();
+    private string Lanzamiento;
+
+
+    protected override void OnInitialized()
+    {
+        List<Pelicula> Peliculas = repositorio.Peliculas.Where(x => x.ID.Equals(PeliculaID)).ToList();
+
+
+        if (Peliculas != null)
+        {
+            Pelicula = Peliculas[0];
+            PeliculaID = Pelicula.ID;
+        }
+
+        GenerosSeleccionados = Pelicula.Generos;
+        DateOnly date = DateOnly.FromDateTime(Pelicula.Lanzamiento);
+        Lanzamiento = date.ToString();
+    }
+
+    private void Editar()
+    {
+        Console.WriteLine("Editando Pelicula");
+    }
+}

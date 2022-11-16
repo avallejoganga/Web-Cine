@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "lLjxQcx+tA47L3PtATJF9sStavcy9ZpnD4zcD6vPIlCkyZMjMzQ6Y4NaZwk0AeJ0Rw+heBU72KokZNraLn6g5g==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\avall\\source\\repos\\Cine4\\Cine4\\Shared\\Cine4.Shared.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\avall\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\6.0.0\\microsoft.extensions.configuration.abstractions.6.0.0.nupkg.sha512",
+    "C:\\Users\\avall\\.nuget\\packages\\microsoft.extensions.primitives\\6.0.0\\microsoft.extensions.primitives.6.0.0.nupkg.sha512",
+    "C:\\Users\\avall\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,98 @@
+﻿@inject IRepositorio repositorio
+
+<EditForm Model="Pelicula" OnValidSubmit="OnValidSubmit">
+
+    <DataAnnotationsValidator/>
+    <div class="form-group">
+        <label>Título:</label>
+        <div>
+            <InputText style="width: 350px" @bind-Value="@Pelicula.Titulo" />
+            <ValidationMessage For="@(() => Pelicula.Titulo)"/>
+        </div>        
+    </div>
+    <div class="form-group">
+        <label>En cartelera:</label>
+        <div>
+            <InputCheckbox @bind-Value="@Pelicula.EnCartelera" />
+            <ValidationMessage For="@(() => Pelicula.EnCartelera)" />
+        </div>
+    </div>    
+    <div class="form-group">
+        <label>Fecha de Lanzamiento:</label>
+        <div>
+            <InputDate style="width: 350px" @bind-Value="@Pelicula.Lanzamiento" />
+            <ValidationMessage For="@(() => Pelicula.Titulo)" />
+        </div>
+    </div>   
+
+    <SelectorMultiple Seleccionados="Seleccionados" NoSeleccionados="NoSeleccionados"></SelectorMultiple>
+
+    <button type="submit" class="btn btn-success" @onclick="Salvar">Salvar Pelicula</button>
+
+</EditForm>
+
+@code {
+    [Parameter] public Pelicula Pelicula{ get; set; }
+    [Parameter] public EventCallback OnValidSubmit{ get; set; }
+    [Parameter] public List<Genero> GenerosSeleccionados { get; set; } = new List<Genero>();
+
+    private string Lanzamiento;
+    private string posterTemporal;
+    List<Genero> Lista;
+    List<Genero> Lista2;
+
+
+
+    private List<SelectorMultipleModel> Seleccionados { get; set; } = new List<SelectorMultipleModel>();
+    private List<SelectorMultipleModel> NoSeleccionados { get; set; } = new List<SelectorMultipleModel>();
+
+
+
+    protected override void OnInitialized()
+    {
+        Lista = repositorio.ObtenerGeneros();
+        Lista2 = GenerosSeleccionados;
+
+        foreach (var Genero in Lista2)
+        {
+            for (int i = 0; i < Lista.Count(); i++)
+            {
+                if (Lista[i].Nombre == Genero.Nombre)
+                    Lista.RemoveAt(i);
+            }
+        }
+        Seleccionados = Lista2.Select(x => new SelectorMultipleModel(x.ID.ToString(), x.Nombre.ToString())).ToList();
+        NoSeleccionados = Lista.Select(x => new SelectorMultipleModel(x.ID.ToString(), x.Nombre.ToString())).ToList();
+        
+         
+    }
+
+    void CambiarGenero()
+    {
+        Pelicula.Generos.Clear();
+        foreach (var genero in Seleccionados)
+            Pelicula.Generos.Add(new Genero(genero.Valor));
+    }   
+
+
+    
+
+
+    private async Task<IEnumerable<Persona>> BuscarActores(string searchText)
+    {
+        return new List<Persona>()
+        {
+            new Persona(){ID=1, Nombre = "Tom Holland"},
+            new Persona(){ID=2, Nombre = "Tom Hanks"}
+        };
+    }
+
+    void Salvar()
+    {
+        CambiarGenero();
+        repositorio.ObtenerPeliculas()[Pelicula.ID] = Pelicula;
+        foreach (var genero in Pelicula.Generos)
+            Console.WriteLine(genero.Nombre);
+
+    }
+}

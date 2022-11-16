@@ -1,0 +1,46 @@
+﻿@page "/peliculas/editar/{PeliculaID:int}"
+@inject IRepositorio repositorio
+
+
+<h3>Datos Pelicula</h3>
+<div style="display:flex">
+
+    <div class="order">
+        <div style="margin-top: 2.5rem; margin-right: 5rem;">
+            <img src="@Pelicula.Poster" style="width: 225px; height:300px; display: block; margin-left: auto;margin-right: auto;margin-bottom: 1.6rem;" />
+            <h3 style="background: lightseagreen; border-radius: 6px; text-align: center; width:max-content; margin: auto">
+                @Pelicula.Titulo
+            </h3>
+        </div>
+    </div>  
+    <FormularioPeliculas Pelicula="Pelicula" GenerosSeleccionados="GenerosSeleccionados"
+                         OnValidSubmit="Editar" />
+</div>
+
+@code {
+    [Parameter] public int PeliculaID { get; set; }
+    Pelicula Pelicula;
+    private List<Genero> GenerosSeleccionados = new List<Genero>();
+
+
+    protected override void OnInitialized()
+    {
+        List<Pelicula> Peliculas = repositorio.Peliculas.Where(x => x.ID.Equals(PeliculaID)).ToList();
+
+
+        if (Peliculas != null)
+        {
+            Pelicula = Peliculas[0];
+            PeliculaID = Pelicula.ID;
+        }
+
+        GenerosSeleccionados = Pelicula.Generos;
+
+
+    }
+
+    private void Editar()
+    {
+        Console.WriteLine("Editando Pelicula");
+    }
+}

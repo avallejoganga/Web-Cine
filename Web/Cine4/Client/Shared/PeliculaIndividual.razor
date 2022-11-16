@@ -1,0 +1,35 @@
+﻿<div>
+<div style="margin-right: 2%; margin-bottom: 10px; text-align: center;background:black;-webkit-border-radius: 7px; border-radius: 7px;border: 13px inset black;">
+   <a href="@infoPelicula">
+       <img src="@Pelicula.Poster" alt="Poster" style="width: 225px; height:300px; color:white"/>
+   </a>
+    <p style="max-width: 225; height: 10px; font-size: 15px; font-weight: bold;margin:0px; "> <a href="@infoPelicula">@Pelicula.TituloCortado</a></p>   
+</div>
+<div style="@display">
+    <a href="@urlPelicula" style="background-color:#44c767;
+	border-radius:42px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:17px;
+	font-weight:bold;
+    padding:6px 23px;
+    margin-left: 4.7rem;">Editar</a>
+</div>
+</div>
+
+@code {
+    [Parameter] public Pelicula Pelicula { get; set; }
+    [Parameter] public bool MostrarBotones { get; set; } = false;
+    [Parameter] public EventCallback<Pelicula> ElminarPelicula{ get; set; }
+    [Parameter] public string display { get; set; }
+    private string urlPelicula = string.Empty;
+    private string infoPelicula = string.Empty;
+
+    protected override void OnInitialized()
+    {        
+        urlPelicula = $"peliculas/editar/" + Pelicula.ID.ToString(); 
+        infoPelicula = $"peliculas/info/" + Pelicula.ID.ToString();
+    }
+}
